@@ -7,7 +7,7 @@ import type { CustomerDataset, CustomerRecord } from './types.js';
 import { BN254_FIELD_PRIME, MAX_BALANCE_SATOSHIS, SATOSHIS_PER_BTC } from './financial.js';
 
 export interface DatasetGeneratorOptions {
-  /** Desired customer count (typically 16 for circuit capacity, or 10/50/100) */
+  /** Desired customer count (typically 8 for circuit capacity, or 10/50/100) */
   count?: number;
   /** PRNG seed for deterministic test datasets */
   seed?: number;
@@ -62,7 +62,7 @@ function hashStringToField(str: string): bigint {
   return hash + 1n; // non-zero
 }
 
-export const CIRCUIT_CAPACITY = 16;
+export const CIRCUIT_CAPACITY = 8;
 
 /**
  * Generate synthetic exchange customer dataset.
@@ -70,7 +70,7 @@ export const CIRCUIT_CAPACITY = 16;
 export function generateSyntheticDataset(
   options: DatasetGeneratorOptions = {}
 ): CustomerDataset {
-  const count = options.count ?? 16;
+  const count = options.count ?? 8;
   const seed = options.seed ?? 1337;
   const prng = new Mulberry32(seed);
 
@@ -90,10 +90,10 @@ export function generateSyntheticDataset(
   ];
 
   const records: CustomerRecord[] = [];
-  const targetCount = CIRCUIT_CAPACITY; // Fixed 16-leaf circuit capacity
+  const targetCount = CIRCUIT_CAPACITY; // Fixed 8-leaf circuit capacity
 
   for (let i = 0; i < targetCount; i++) {
-    const customerId = `cust_${(i + 1).toString().padStart(3, '0')}`;
+    const customerId = i < 4 ? canonicalNames[i].name : `cust_${(i + 1).toString().padStart(3, '0')}`;
     const idNum = hashStringToField(customerId);
 
     // Generate random 128-bit salt for commitment hiding
@@ -101,8 +101,8 @@ export function generateSyntheticDataset(
 
     let balanceSatoshis: bigint;
 
-    if (i < 4 && count <= 16) {
-      // Use canonical balances for initial 4 accounts
+    if (i < 4 && count <= 8) {
+      // Use canonical balances for initial 4 accounts (Alice, Bob, Charlie, David)
       balanceSatoshis = canonicalNames[i].balance;
     } else if (i >= count) {
       // Pad inactive accounts with 0 balance

@@ -61,15 +61,15 @@ export async function generateProofForDataset(dataset, options = {}) {
   // 2. Compute Poseidon Leaf Commitments
   log('\n2️⃣ Computing Poseidon leaf commitments...');
   const leaves = [];
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 8; i++) {
     const rec = dataset.records[i];
     const leaf = await computeLeafCommitment(rec.idNum, rec.balanceSatoshis, rec.salt, dataset.version);
     leaves.push(leaf);
   }
-  log('   ✔ 16 Poseidon leaf commitments computed.');
+  log('   ✔ 8 Poseidon leaf commitments computed.');
 
-  // 3. Construct 16-leaf Merkle tree
-  log('\n3️⃣ Constructing Poseidon Merkle Tree (Depth = 4)...');
+  // 3. Construct 8-leaf Merkle tree
+  log('\n3️⃣ Constructing Poseidon Merkle Tree (Depth = 3)...');
   const tree = await MerkleTree16.create(leaves);
   const root = tree.getRoot();
   log(`   ✔ Merkle Root: 0x${root.toString(16)}`);
@@ -147,7 +147,7 @@ export async function generateProofForDataset(dataset, options = {}) {
 async function main() {
   // Generate canonical Alice, Bob, Charlie, David dataset
   const dataset = generateSyntheticDataset({
-    count: 16,
+    count: 8,
     seed: 42,
     reserveMultiplierBps: 12_000, // 120%
     datasetVersion: 1n,
