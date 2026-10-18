@@ -9,7 +9,6 @@ import "../ReserveProofRegistry.sol";
  */
 contract MockGroth16Verifier is IGroth16Verifier {
     bool public shouldPass = true;
-    uint256 public verifyCallCount;
 
     function setShouldPass(bool _shouldPass) external {
         shouldPass = _shouldPass;
@@ -20,8 +19,7 @@ contract MockGroth16Verifier is IGroth16Verifier {
         uint256[2][2] calldata,
         uint256[2] calldata,
         uint256[4] calldata
-    ) external override returns (bool) {
-        verifyCallCount++;
+    ) external view override returns (bool) {
         return shouldPass;
     }
 }
