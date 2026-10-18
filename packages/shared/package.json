@@ -2,12 +2,19 @@
   "name": "@reserveproof/shared",
   "version": "1.0.0",
   "description": "Shared cryptographic, financial, Merkle tree, and validation primitives for ReserveProof",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "build": "npx tsc",
+    "typecheck": "npx tsc --noEmit",
     "test": "node --test tests/*.test.js || echo 'Tests run via root test runner'"
   },
   "dependencies": {

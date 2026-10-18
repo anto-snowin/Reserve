@@ -28,10 +28,14 @@ if (!fs.existsSync(r1csPath)) {
   execSync(`node "${path.join(__dirname, 'compile.js')}"`, { stdio: 'inherit' });
 }
 
+const snarkjsCli = path.join(rootDir, 'node_modules/snarkjs/build/cli.cjs');
+const snarkjsCmd = `node "${snarkjsCli}"`;
+
 function run(cmd, desc) {
+  const fullCmd = cmd.replace(/^npx snarkjs/, snarkjsCmd);
   console.log(`\n▶ ${desc}`);
-  console.log(`$ ${cmd}`);
-  execSync(cmd, { cwd: buildDir, stdio: 'inherit' });
+  console.log(`$ ${fullCmd}`);
+  execSync(fullCmd, { cwd: buildDir, stdio: 'inherit' });
 }
 
 // 1. Powers of Tau Phase 1 (2^14 = 16,384 constraints, sufficient for ~9,500 constraints)

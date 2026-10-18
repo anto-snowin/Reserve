@@ -5,47 +5,39 @@ include "circomlib/circuits/bitify.circom";
 include "circomlib/circuits/comparators.circom";
 
 /**
- * 16-Leaf Poseidon Merkle Tree (Depth = 4).
- * Reconstructs the Merkle root from 16 leaf commitments in arithmetic constraints.
+ * 8-Leaf Poseidon Merkle Tree (Depth = 3).
+ * Reconstructs the Merkle root from 8 leaf commitments in arithmetic constraints.
  */
-template MerkleTree16() {
-    signal input leaves[16];
+template MerkleTree8() {
+    signal input leaves[8];
     signal output root;
 
-    // Layer 1: 8 internal nodes
-    component h1[8];
-    for (var i = 0; i < 8; i++) {
+    // Layer 1: 4 internal nodes
+    component h1[4];
+    for (var i = 0; i < 4; i++) {
         h1[i] = Poseidon(2);
         h1[i].inputs[0] <== leaves[2 * i];
         h1[i].inputs[1] <== leaves[2 * i + 1];
     }
 
-    // Layer 2: 4 internal nodes
-    component h2[4];
-    for (var i = 0; i < 4; i++) {
+    // Layer 2: 2 internal nodes
+    component h2[2];
+    for (var i = 0; i < 2; i++) {
         h2[i] = Poseidon(2);
         h2[i].inputs[0] <== h1[2 * i].out;
         h2[i].inputs[1] <== h1[2 * i + 1].out;
     }
 
-    // Layer 3: 2 internal nodes
-    component h3[2];
-    for (var i = 0; i < 2; i++) {
-        h3[i] = Poseidon(2);
-        h3[i].inputs[0] <== h2[2 * i].out;
-        h3[i].inputs[1] <== h2[2 * i + 1].out;
-    }
-
-    // Layer 4: Root
+    // Layer 3: Root
     component hRoot = Poseidon(2);
-    hRoot.inputs[0] <== h3[0].out;
-    hRoot.inputs[1] <== h3[1].out;
+    hRoot.inputs[0] <== h2[0].out;
+    hRoot.inputs[1] <== h2[1].out;
 
     root <== hRoot.out;
 }
 
 /**
- * ReserveProof Solvency Circuit
+ * ReserveProof Solvency Circuit (Capacity N = 8)
  *
  * Mathematical Statement Proved:
  * 1. Each customer leaf commitment is computed as Poseidon(customerId, balance, salt, datasetVersion).
@@ -119,12 +111,12 @@ template Solvency(N) {
     solvencyCheck.out === 1;
 
     // 6. Compute Merkle root of all computed leaf commitments and constrain to public merkleRoot
-    component tree = MerkleTree16();
+    component tree = MerkleTree8();
     for (var i = 0; i < N; i++) {
         tree.leaves[i] <== computedLeaves[i];
     }
     merkleRoot === tree.root;
 }
 
-// Fixed 16-leaf capacity solvency circuit
-component main {public [merkleRoot, totalLiabilities, declaredReserves, datasetVersion]} = Solvency(16);
+// Fixed 8-leaf capacity solvency circuit
+component main {public [merkleRoot, totalLiabilities, declaredReserves, datasetVersion]} = Solvency(8);

@@ -41,12 +41,12 @@ export async function computeLeafCommitment(
 }
 
 /**
- * Fixed-capacity 16-leaf Merkle Tree (Depth = 4).
- * Matches the Solvency(16) Circom circuit exactly.
+ * Fixed-capacity 8-leaf Merkle Tree (Depth = 3).
+ * Matches the Solvency(8) Circom circuit exactly.
  */
-export class MerkleTree16 {
-  public readonly depth: number = 4;
-  public readonly capacity: number = 16;
+export class MerkleTree8 {
+  public readonly depth: number = 3;
+  public readonly capacity: number = 8;
   public leaves: bigint[];
   public layers: bigint[][];
 
@@ -56,11 +56,11 @@ export class MerkleTree16 {
   }
 
   /**
-   * Build a 16-leaf Merkle Tree from array of 16 leaf commitments.
+   * Build an 8-leaf Merkle Tree from array of 8 leaf commitments.
    */
-  public static async create(leaves: bigint[]): Promise<MerkleTree16> {
-    if (leaves.length !== 16) {
-      throw new Error(`MerkleTree16 requires exactly 16 leaves, received ${leaves.length}`);
+  public static async create(leaves: bigint[]): Promise<MerkleTree8> {
+    if (leaves.length !== 8) {
+      throw new Error(`MerkleTree8 requires exactly 8 leaves, received ${leaves.length}`);
     }
 
     const poseidon = await getPoseidon();
@@ -70,7 +70,7 @@ export class MerkleTree16 {
     };
 
     const layers: bigint[][] = [];
-    layers.push([...leaves]); // Layer 0 (16 leaves)
+    layers.push([...leaves]); // Layer 0 (8 leaves)
 
     let currentLayer = leaves;
     while (currentLayer.length > 1) {
@@ -82,7 +82,7 @@ export class MerkleTree16 {
       currentLayer = nextLayer;
     }
 
-    return new MerkleTree16(leaves, layers);
+    return new MerkleTree8(leaves, layers);
   }
 
   /**
@@ -93,11 +93,11 @@ export class MerkleTree16 {
   }
 
   /**
-   * Generate an inclusion proof for the leaf at leafIndex (0 to 15)
+   * Generate an inclusion proof for the leaf at leafIndex (0 to 7)
    */
   public getInclusionProof(leafIndex: number): MerkleInclusionProof {
     if (leafIndex < 0 || leafIndex >= this.capacity) {
-      throw new Error(`Leaf index ${leafIndex} out of bounds (0-15)`);
+      throw new Error(`Leaf index ${leafIndex} out of bounds (0-7)`);
     }
 
     const pathElements: bigint[] = [];
@@ -146,3 +146,6 @@ export class MerkleTree16 {
     return current === targetRoot;
   }
 }
+
+// Alias for backwards compatibility
+export const MerkleTree16 = MerkleTree8;
