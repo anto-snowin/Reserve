@@ -1,0 +1,40 @@
+{
+  "name": "@reserveproof/web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "node tests/frontend.test.js"
+  },
+  "dependencies": {
+    "@reserveproof/shared": "*",
+    "@tanstack/react-query": "^5.59.13",
+    "circomlibjs": "^0.1.7",
+    "clsx": "^2.1.1",
+    "ethers": "^6.13.0",
+    "lucide-react": "^0.453.0",
+    "next": "14.2.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "recharts": "^2.13.0",
+    "snarkjs": "^0.7.6",
+    "tailwind-merge": "^2.5.4",
+    "viem": "^2.21.32",
+    "wagmi": "^2.12.20",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3"
+  }
+}
