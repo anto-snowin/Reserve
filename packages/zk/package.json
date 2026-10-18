@@ -1,0 +1,23 @@
+{
+  "name": "@reserveproof/zk",
+  "version": "1.0.0",
+  "description": "Circom circuits and Groth16 zero-knowledge proving scripts for ReserveProof",
+  "type": "module",
+  "scripts": {
+    "compile": "node scripts/compile.js",
+    "setup:dev": "node scripts/setup-dev.js",
+    "prove": "node scripts/prove.js",
+    "verify": "node scripts/verify.js",
+    "test": "node test/circuit.test.js"
+  },
+  "dependencies": {
+    "@reserveproof/shared": "*",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.1.7",
+    "snarkjs": "^0.7.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "typescript": "^5.6.3"
+  }
+}
